@@ -1,0 +1,74 @@
+services:
+  bite_wear-mysql:
+    image: mysql:8.4.2
+    container_name: bite_wear-mysql
+    restart: always
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_HOST: localhost
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: bite_wear
+      MYSQL_USER: bite
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d:ro
+    command:
+      - --innodb-buffer-pool-size=80M
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+08:00
+      - --lower-case-table-names=1
+      - --explicit-defaults-for-timestamp=true
+      - --server-id=1
+      - --log-bin=mysql-bin
+      - --binlog-ignore-db=mysql
+      - --binlog-format=ROW
+    networks: [bite_wear_network]
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_PASSWORD\" mysql --protocol=tcp -h 127.0.0.1 -u \"$$MYSQL_USER\" -D bite_wear -Nse 'SELECT 1' >/dev/null"]
+      start_period: 120s
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  bite_wear-redis:
+    image: redis:7.0.15
+    container_name: bite_wear-redis
+    restart: always
+    ports:
+      - "127.0.0.1:6379:6379"
+    environment:
+      TZ: Asia/Shanghai
+      REDISCLI_AUTH: ${REDIS_PASSWORD:?Set REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+      - ./redis/conf/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    networks: [bite_wear_network]
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  bite_wear-web:
+    image: nginx:1.24.0
+    container_name: bite_wear-web
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/web/dist:/data/bite_wear/web/dist:ro
+    networks: [bite_wear_network]
+
+networks:
+  bite_wear_network:
+    name: bite_wear_network
+
+volumes:
+  mysql_data:
+  redis_data:

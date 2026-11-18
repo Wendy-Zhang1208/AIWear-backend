@@ -1,0 +1,7 @@
+--- a/src/main/resources/application.yml
++++ b/src/main/resources/application.yml
+@@ -8,2 +8,2 @@
+-            max-file-size: 10MB
+-            max-request-size: 10MB
++            max-file-size: 50MB
++            max-request-size: 51MB

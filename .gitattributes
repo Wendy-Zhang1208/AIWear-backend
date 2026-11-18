@@ -1,0 +1,4 @@
+* text=auto
+
+# Keep deployment scripts usable after a checkout on Windows or Linux.
+*.sh text eol=lf

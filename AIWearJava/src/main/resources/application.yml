@@ -1,0 +1,86 @@
+server:
+    port: 8081
+    tomcat:
+        # 超限后丢弃剩余上传数据，保证前端能收到10MB提示；文件上限仍由multipart控制。
+        max-swallow-size: -1
+spring:
+    application:
+        name: aiwear-service
+    servlet:
+        multipart:
+            max-file-size: 10MB
+            # 单张图片最多10MB，总请求额外预留multipart表单开销。
+            max-request-size: 11MB
+
+# MySQL数据源配置
+    datasource:
+        url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:13306}/bite_wear?useSSL=false&serverTimezone=Asia/Shanghai
+        username: 
+        password: 
+        driver-class-name: com.mysql.cj.jdbc.Driver
+# Redis配置
+    data:
+        redis:
+            host: ${REDIS_HOST:127.0.0.1}
+            port: ${REDIS_PORT:16379}
+            password: ${REDIS_PASSWORD:}
+            database: 0
+            timeout: 2000ms
+            lettuce:
+                pool:
+                    max-active: 8
+                    max-idle: 8
+                    min-idle: 0
+                    max-wait: -1ms
+# 邮件配置
+    mail:
+        host: smtp.qq.com
+        port: 587
+        username: 
+        password: 
+        protocol: smtp
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+                        required: true
+                    socketFactory:
+                        class: javax.net.ssl.SSLSocketFactory
+# MyBatis-Plus配置
+mybatis-plus:
+    configuration:
+        map-underscore-to-camel-case: true # 开启驼峰命名转换
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    global-config:
+        db-config:  
+            id-type: auto # 主键自增
+# 自定义日志配置
+logging:
+    pattern:
+        console: "%clr(%d{HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta}
+%clr(---){faint} %clr([%15.15t]){cyan} %clr(%-40.40logger{39}){cyan} %clr(:)
+{faint} %m%n%wEx"
+# JWT配置
+jwt:
+    secret: 
+    expiration: 12
+
+# OSS 配置：AccessKey 仅从环境变量读取，不将密钥写入配置文件。
+aliyun:
+    oss:
+        endpoint: oss-cn-beijing.aliyuncs.com
+        access-key-id: 
+        access-key-secret: 
+        bucket-name: 
+        max-size: 10485760
+        max-pixels: 25000000
+
+# 图片检索索引在 MySQL 提交后同步生成；失败不影响原有上传结果。
+python:
+    service:
+        base-url: ${PYTHON_SERVICE_BASE_URL:http://127.0.0.1:5000}
+        connect-timeout: ${PYTHON_SERVICE_CONNECT_TIMEOUT:0s}
+        read-timeout: ${PYTHON_SERVICE_READ_TIMEOUT:0s}
+        sign-oss-url: ${PYTHON_SERVICE_SIGN_OSS_URL:false}

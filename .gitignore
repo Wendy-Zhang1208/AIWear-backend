@@ -1,0 +1,55 @@
+# This repository contains backend code only.
+/aiwear-frontend/
+
+# IDE and operating-system files.
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Java build output.
+target/
+*.class
+
+# Python environments and caches.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local credentials and environment files.
+.env
+.env.*
+!.env.example
+!.env.template
+/AIWearJava/src/main/resources/application*.yml
+/AIWearJava/src/main/resources/application*.yaml
+/AIWearJava/src/main/resources/application*.properties
+!/AIWearJava/src/main/resources/application.yml
+!/AIWearJava/src/main/resources/application.example.yml
+!/AIWearJava/src/main/resources/application.example.yaml
+/middleware-deploy/redis/conf/redis.conf
+
+# Downloaded models and generated image inputs.
+/AIWearPython/models/
+/AIWearPython/.cache/
+*.safetensors
+*.pt
+*.pth
+*.onnx
+/AIWearPython/edit_image/*.img
+/AIWearPython/edit_image/*.png
+/AIWearPython/edit_image/*.jpg
+/AIWearPython/edit_image/*.jpeg
+/AIWearPython/edit_image/*.webp
+/AIWearPython/edit_image/*.gif
+/AIWearPython/edit_image/*.bmp
+/AIWearPython/edit_image/*.tiff
+
+# Runtime logs.
+*.log
+logs/
